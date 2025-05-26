@@ -57,6 +57,7 @@ export default function Home() {
   }
 
   const options = puzzle.options;
+  const correctMeta = options[puzzle.correct_index];
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">
@@ -96,19 +97,29 @@ export default function Home() {
           <div>
             <div className="text-sm text-gray-500">Price</div>
             <div className="text-2xl font-bold text-teal-600">
-  {Number(puzzle.price_eur).toLocaleString('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  })}
-</div>
-
+              {Number(puzzle.price_eur).toLocaleString('de-DE', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+              })}
+            </div>
           </div>
 
+          {/* ✅ FLIGHT DATE */}
           <div>
             <div className="text-sm text-gray-500">Flight Date</div>
-            <div className="text-md text-gray-700">{puzzle.flight_date}</div>
+            <div className="text-md text-gray-700">
+              {correctMeta.flight_date}
+            </div>
+          </div>
+
+          {/* ✅ BOOKING TIMING */}
+          <div>
+            <div className="text-sm text-gray-500">Booking Timing</div>
+            <div className="text-md text-gray-700">
+              Ticket price {correctMeta.departure_date_distance} before departure
+            </div>
           </div>
 
           <button
