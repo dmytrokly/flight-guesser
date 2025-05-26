@@ -1,32 +1,43 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const options = [
-    "New York → London",
-    "Paris → Tokyo",
-    "Berlin → Rome",
-    "Madrid → Dubai",
-    "Toronto → Lisbon",
-  ];
+  const [puzzle, setPuzzle] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const correctIndex = 1; // Option 2 is correct
   const [wrongGuesses, setWrongGuesses] = useState([]);
   const [guesses, setGuesses] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [correctGuessed, setCorrectGuessed] = useState(false);
-
   const [hintShown, setHintShown] = useState(false);
-  const hintText = "This city is famous for sushi, cherry blossoms, and high-speed trains.";
+
+  useEffect(() => {
+    loadNewPuzzle();
+  }, []);
+
+  async function loadNewPuzzle() {
+    setLoading(true);
+    setPuzzle(null);
+    setWrongGuesses([]);
+    setGuesses(0);
+    setRevealed(false);
+    setCorrectGuessed(false);
+    setHintShown(false);
+
+    const res = await fetch('/api/puzzle');
+    const data = await res.json();
+    setPuzzle(data);
+    setLoading(false);
+  }
 
   function handleClick(index) {
-    if (revealed || wrongGuesses.includes(index) || (index === correctIndex && correctGuessed)) return;
+    if (!puzzle || revealed || wrongGuesses.includes(index) || (index === puzzle.correct_index && correctGuessed)) return;
 
     const newGuessCount = guesses + 1;
     setGuesses(newGuessCount);
 
-    if (index === correctIndex) {
+    if (index === puzzle.correct_index) {
       setCorrectGuessed(true);
       setRevealed(true);
     } else {
@@ -37,6 +48,16 @@ export default function Home() {
     }
   }
 
+  if (loading) {
+    return <main className="flex min-h-screen items-center justify-center text-xl">Loading puzzle...</main>;
+  }
+
+  if (!puzzle || !puzzle.options) {
+    return <main className="flex min-h-screen items-center justify-center text-xl text-red-600">Error loading puzzle</main>;
+  }
+
+  const options = puzzle.options;
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">
       <h1 className="text-2xl font-semibold mb-6 text-gray-800">✈️ Flight Guesser</h1>
@@ -44,8 +65,9 @@ export default function Home() {
       <div className="flex flex-col md:flex-row gap-8 w-full max-w-5xl">
         {/* Choices Section */}
         <div className="flex-1 space-y-4">
-          {options.map((text, idx) => {
-            const isCorrect = idx === correctIndex;
+          {options.map((option, idx) => {
+            const label = `${option.from.trim()} → ${option.to.trim()}`;
+            const isCorrect = idx === puzzle.correct_index;
             const isWrong = wrongGuesses.includes(idx);
             const isCorrectGuess = correctGuessed && isCorrect;
             const showCorrectAfterReveal = revealed && isCorrect;
@@ -63,7 +85,7 @@ export default function Home() {
 
             return (
               <div key={idx} onClick={() => handleClick(idx)} className={cardClass}>
-                {text}
+                {label}
               </div>
             );
           })}
@@ -73,12 +95,20 @@ export default function Home() {
         <div className="w-full md:w-64 bg-white border border-gray-200 p-4 rounded-xl shadow space-y-4">
           <div>
             <div className="text-sm text-gray-500">Price</div>
-            <div className="text-2xl font-bold text-teal-600">$349</div>
+            <div className="text-2xl font-bold text-teal-600">
+  {Number(puzzle.price_eur).toLocaleString('de-DE', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })}
+</div>
+
           </div>
 
           <div>
             <div className="text-sm text-gray-500">Flight Date</div>
-            <div className="text-md text-gray-700">June 12, 2025</div>
+            <div className="text-md text-gray-700">{puzzle.flight_date}</div>
           </div>
 
           <button
@@ -90,11 +120,20 @@ export default function Home() {
 
           {hintShown && (
             <div className="mt-4 p-3 bg-yellow-50 text-yellow-800 border border-yellow-300 rounded">
-              💡 Hint: {hintText}
+              💡 Hint: {puzzle.hint}
             </div>
           )}
         </div>
       </div>
+
+      {/* Next Puzzle Button */}
+      <button
+        onClick={loadNewPuzzle}
+        disabled={loading}
+        className="mt-10 px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition"
+      >
+        🔁 Next Puzzle
+      </button>
     </main>
   );
 }
