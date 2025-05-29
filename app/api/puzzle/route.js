@@ -92,7 +92,7 @@ export async function GET() {
             content: `Generate a 1-sentence fun or clever hint for a city called "${arrivalName}" (IATA code: ${arrivalCode}). Make it indirect or geographic.`,
           },
         ],
-        temperature: 0.80,
+        temperature: 0.8,
       }),
     });
 
