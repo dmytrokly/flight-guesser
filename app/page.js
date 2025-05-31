@@ -11,10 +11,11 @@ export default function Home() {
   const [revealed, setRevealed] = useState(false);
   const [correctGuessed, setCorrectGuessed] = useState(false);
   const [hintShown, setHintShown] = useState(false);
+  const [useLivePuzzle, setUseLivePuzzle] = useState(false);
 
   useEffect(() => {
     loadNewPuzzle();
-  }, []);
+  }, [useLivePuzzle]);
 
   async function loadNewPuzzle() {
     setLoading(true);
@@ -25,7 +26,7 @@ export default function Home() {
     setCorrectGuessed(false);
     setHintShown(false);
 
-    const res = await fetch('/api/puzzle');
+    const res = await fetch(useLivePuzzle ? '/api/live-puzzle' : '/api/puzzle');
     const data = await res.json();
     setPuzzle(data);
     setLoading(false);
@@ -57,6 +58,21 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6 font-sans">
       <h1 className="text-3xl font-bold mb-8 text-gray-800 tracking-tight">✈️ Flight Guesser</h1>
+
+      <div className="mb-4 flex space-x-4">
+        <button
+          onClick={() => setUseLivePuzzle(false)}
+          className={`px-4 py-2 rounded-xl font-medium ${!useLivePuzzle ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+        >
+          🕓 Daily
+        </button>
+        <button
+          onClick={() => setUseLivePuzzle(true)}
+          className={`px-4 py-2 rounded-xl font-medium ${useLivePuzzle ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+        >
+          📡 Live
+        </button>
+      </div>
 
       <div className="flex flex-col md:flex-row gap-8 w-full max-w-5xl">
         <div className="flex-1 space-y-4">
@@ -94,12 +110,16 @@ export default function Home() {
 
           <div>
             <div className="text-sm text-gray-500">Flight Date</div>
-            <div className="text-md text-gray-700">{correctMeta.flight_date || 'Unknown'}</div>
+            <div className="text-md text-gray-700">{correctMeta.flight_date || correctMeta.departureDate || 'Unknown'}</div>
           </div>
 
           <div>
             <div className="text-sm text-gray-500">Booking Timing</div>
-            <div className="text-md text-gray-700">Ticket price {correctMeta.departure_date_distance || '?'} before departure</div>
+            <div className="text-md text-gray-700">
+              {useLivePuzzle
+                ? '🔴 Live API data from Amadeus'
+                : `Ticket price ${correctMeta.departure_date_distance || '?'} before departure`}
+            </div>
           </div>
 
           <button
@@ -116,7 +136,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               className="mt-4 p-3 bg-yellow-50 text-yellow-800 border border-yellow-300 rounded text-sm"
             >
-              💡 <strong>Hint:</strong> {puzzle.hint}
+              💡 <strong>Hint:</strong> {puzzle.hint || 'This destination is ' + correctMeta.to}
             </motion.div>
           )}
         </div>
