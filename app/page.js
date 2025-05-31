@@ -1,7 +1,7 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   const [puzzle, setPuzzle] = useState(null);
@@ -55,30 +55,39 @@ export default function Home() {
   const correctMeta = options[puzzle.correct_index];
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6">
-      <h1 className="text-2xl font-semibold mb-6 text-gray-800">✈️ Flight Guesser</h1>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-6 font-sans">
+      <h1 className="text-3xl font-bold mb-8 text-gray-800 tracking-tight">✈️ Flight Guesser</h1>
+
       <div className="flex flex-col md:flex-row gap-8 w-full max-w-5xl">
         <div className="flex-1 space-y-4">
           {options.map((option, idx) => {
-            const label = `${option.from.trim()} → ${option.to.trim()}`;
             const isCorrect = idx === puzzle.correct_index;
             const isWrong = wrongGuesses.includes(idx);
             const isCorrectGuess = correctGuessed && isCorrect;
             const showCorrectAfterReveal = revealed && isCorrect;
 
-            let cardClass = "bg-white border border-gray-200 rounded-xl shadow transition cursor-pointer px-6 py-6 text-lg h-24 flex items-center";
-            if (isCorrectGuess || showCorrectAfterReveal) cardClass += " bg-green-100 border-green-400 text-green-700";
+            let cardClass =
+              "bg-white border border-gray-200 rounded-xl shadow-sm transition-all cursor-pointer px-6 py-5 flex items-center hover:scale-[1.01] hover:shadow-md duration-150";
+            if (isCorrectGuess || showCorrectAfterReveal) cardClass += " bg-green-100 border-green-400 text-green-800";
             else if (isWrong) cardClass += " bg-red-100 border-red-400 text-red-700";
-            else if (!revealed) cardClass += " hover:bg-[#e0f7f7]";
+            else if (!revealed) cardClass += " hover:bg-[#e6fafa]";
 
-            return <div key={idx} onClick={() => handleClick(idx)} className={cardClass}>{label}</div>;
+            return (
+              <div key={idx} onClick={() => handleClick(idx)} className={cardClass}>
+                <div className="text-xl mr-4">🛫</div>
+                <div>
+                  <div className="text-sm text-gray-500">{option.from}</div>
+                  <div className="text-lg font-medium">{option.to}</div>
+                </div>
+              </div>
+            );
           })}
         </div>
 
-        <div className="w-full md:w-64 bg-white border border-gray-200 p-4 rounded-xl shadow space-y-4">
+        <div className="w-full md:w-72 bg-white border border-gray-200 p-5 rounded-xl shadow space-y-4">
           <div>
             <div className="text-sm text-gray-500">Price</div>
-            <div className="text-2xl font-bold text-teal-600">
+            <div className="text-3xl font-extrabold text-teal-600 tracking-tight">
               {Number(correctMeta.price_eur).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}
             </div>
           </div>
@@ -93,15 +102,41 @@ export default function Home() {
             <div className="text-md text-gray-700">Ticket price {correctMeta.departure_date_distance || '?'} before departure</div>
           </div>
 
-          <button onClick={() => setHintShown(true)} className="mt-4 w-full bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-xl transition">
+          <button
+            onClick={() => setHintShown(true)}
+            disabled={hintShown}
+            className="mt-4 w-full bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-xl transition disabled:opacity-60 disabled:cursor-not-allowed"
+          >
             🎁 Get a Hint
           </button>
 
-          {hintShown && <div className="mt-4 p-3 bg-yellow-50 text-yellow-800 border border-yellow-300 rounded">💡 Hint: {puzzle.hint}</div>}
+          {hintShown && (
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 p-3 bg-yellow-50 text-yellow-800 border border-yellow-300 rounded text-sm"
+            >
+              💡 <strong>Hint:</strong> {puzzle.hint}
+            </motion.div>
+          )}
         </div>
       </div>
 
-      <button onClick={loadNewPuzzle} disabled={loading} className="mt-10 px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition">
+      {revealed && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-10 p-4 bg-blue-50 text-blue-800 border border-blue-300 rounded-lg text-center"
+        >
+          ✅ The correct route was <strong>{correctMeta.from} → {correctMeta.to}</strong>
+        </motion.div>
+      )}
+
+      <button
+        onClick={loadNewPuzzle}
+        disabled={loading}
+        className="mt-8 px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition disabled:opacity-50"
+      >
         🔁 Next Puzzle
       </button>
     </main>
