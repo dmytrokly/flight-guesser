@@ -162,3 +162,31 @@ export default function Home() {
     </main>
   );
 }
+
+async function loadNewPuzzle() {
+  setLoading(true);
+  setPuzzle(null);
+  setWrongGuesses([]);
+  setGuesses(0);
+  setRevealed(false);
+  setCorrectGuessed(false);
+  setHintShown(false);
+
+  try {
+    const res = await fetch(useLivePuzzle ? '/api/live-puzzle' : '/api/puzzle');
+    const data = await res.json();
+
+    console.log("🔍 Loaded puzzle:", data); // ← Add this
+
+    if (!data || !data.options || !Array.isArray(data.options)) {
+      throw new Error("Invalid puzzle format");
+    }
+
+    setPuzzle(data);
+  } catch (err) {
+    console.error("❌ Puzzle fetch failed:", err); // ← See this in DevTools console
+    setPuzzle(null);
+  } finally {
+    setLoading(false);
+  }
+}
