@@ -184,9 +184,10 @@ async function loadNewPuzzle() {
 
     setPuzzle(data);
   } catch (err) {
-    console.error("❌ Puzzle fetch failed:", err); // ← See this in DevTools console
+    console.error("❌ Puzzle fetch failed:", err); // See this in DevTools console
     setPuzzle(null);
   } finally {
     setLoading(false);
   }
+
 }
