@@ -57,9 +57,7 @@ Install dependencies:
 npm install
 Start the development server:
 
-bash
-Copy
-Edit
+
 npm run dev
 Visit: http://localhost:3000
 
@@ -76,6 +74,3 @@ OpenAI (for generating hints)
 
 No authentication required for gameplay; daily and live puzzles are open to all users.
 
-css
-Copy
-Edit
