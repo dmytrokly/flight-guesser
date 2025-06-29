@@ -49,28 +49,25 @@ Prices are formatted for the German locale (de-DE).
 - Basic user accounts for personalization
 - AI-assisted automatic puzzle generation
 
+
 ## Getting Started
 
 Install dependencies:
 
-```bash
 npm install
+
 Start the development server:
 
-
 npm run dev
+
 Visit: http://localhost:3000
 
-Tech Stack
-Next.js (App Router)
+## Tech Stack
 
-Supabase (PostgreSQL)
-
-Tailwind CSS
-
-Amadeus Self-Service API (Flight Offers)
-
-OpenAI (for generating hints)
+- Next.js (App Router)
+- Supabase (PostgreSQL)
+- Tailwind CSS
+- Amadeus Self-Service API (Flight Offers)
+- OpenAI (for generating hints)
 
 No authentication required for gameplay; daily and live puzzles are open to all users.
-
