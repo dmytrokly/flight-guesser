@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Flight Guesser
+
+A daily and live-flight guessing game where players match airfares to the correct flight route. Built with Next.js, Supabase, and the Amadeus Flight Offers API, designed to be interactive, responsive, and easy to extend.
+
+## What I Learned
+
+While building this project, I gained experience with:
+
+- Creating a unique daily puzzle system using historical datasets in Supabase
+- Integrating the Amadeus Flights API to fetch live flight prices
+- Randomizing flight route options while ensuring unique prices and routes
+- Handling puzzle state with React hooks and conditional UI feedback
+- Building a hint system backed by AI-generated content (OpenAI)
+- Using Next.js API routes for server-side puzzle generation
+- Managing and querying flight data in a PostgreSQL database (Supabase)
+- Designing interactive guessing UI with correct/wrong feedback logic
+- Handling multi-attempt gameplay with reveal and retry mechanics
+
+## Features
+
+### Public (User-Facing)
+
+**Daily Puzzle**  
+A new puzzle every day with historical flight prices.  
+Three guesses allowed before revealing the correct route.  
+One AI-powered hint per puzzle.
+
+**Live Puzzle**  
+Generates puzzles in real-time using live flight prices from the Amadeus API.  
+Dynamically fetches flight offers with a random date for realistic challenges.
+
+**Interactive Gameplay**  
+Immediate feedback on correct or incorrect guesses.  
+Hints displayed on demand.  
+Tracks remaining guesses with reveal logic.
+
+**Next Puzzle**  
+Instantly generate the next puzzle with a button click.
+
+**Flight Metadata**  
+Displays flight date, booking timing (historical), and price in EUR.  
+Prices are formatted for the German locale (de-DE).
+
+### Future (Planned)
+
+- User streaks and score tracking
+- Shareable puzzle results similar to Wordle
+- Leaderboards for daily and live puzzles
+- Basic user accounts for personalization
+- AI-assisted automatic puzzle generation
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
 ```bash
+npm install
+Start the development server:
+
+bash
+Copy
+Edit
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Visit: http://localhost:3000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Tech Stack
+Next.js (App Router)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Supabase (PostgreSQL)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tailwind CSS
 
-## Learn More
+Amadeus Self-Service API (Flight Offers)
 
-To learn more about Next.js, take a look at the following resources:
+OpenAI (for generating hints)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+No authentication required for gameplay; daily and live puzzles are open to all users.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+css
+Copy
+Edit
