@@ -13,7 +13,7 @@ While building this project, I gained experience with:
 - Building a hint system backed by AI-generated content (OpenAI)
 - Using Next.js API routes for server-side puzzle generation
 - Managing and querying flight data in a PostgreSQL database (Supabase)
-- Designing interactive guessing UI with correct/wrong feedback logic
+- Designing an interactive guessing UI with correct/wrong feedback logic
 - Handling multi-attempt gameplay with reveal and retry mechanics
 
 ## Features
